@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Movie Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        .player-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 16px;
+            z-index: 10;
+            display: none;
+        }
+        
+        /* Error message */
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            text-align: center;
+            z-index: 20;
+            display: none;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .error-message h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .error-message p {
+            color: #ddd;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .retry-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .retry-btn:hover {
+            background: #1557b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <!-- Loading indicator -->
+        <div class="loading" id="loading">Loading video...</div>
+        
+        <!-- Error message -->
+        <div class="error-message" id="errorMessage">
+            <h3>⚠️ Playback Error</h3>
+            <p>Unable to play this video. This could be due to:</p>
+            <p>• Video privacy settings<br>• Network connection<br>• File availability</p>
+            <button class="retry-btn" onclick="retryLoad()">Try Again</button>
+        </div>
+        
+        <!-- Video iframe -->
+        <iframe 
+            id="videoFrame"
+            src="https://drive.google.com/file/d/1p_tv--TW0tPwpmui8lw2Phvjvr83-_H2/preview"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('videoFrame');
+        const loading = document.getElementById('loading');
+        const errorMsg = document.getElementById('errorMessage');
+        
+        // Show loading indicator
+        loading.style.display = 'block';
+        
+        // Handle iframe load success
+        iframe.onload = function() {
+            loading.style.display = 'none';
+            errorMsg.style.display = 'none';
+        };
+        
+        // Handle iframe load error
+        iframe.onerror = function() {
+            loading.style.display = 'none';
+            errorMsg.style.display = 'block';
+        };
+        
+        // Retry function
+        function retryLoad() {
+            errorMsg.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Reload iframe
+            const currentSrc = iframe.src;
+            iframe.src = '';
+            setTimeout(() => {
+                iframe.src = currentSrc;
+            }, 100);
+        }
+        
+        // Fallback: if iframe doesn't trigger events properly
+        setTimeout(function() {
+            loading.style.display = 'none';
+        }, 5000); // Hide loading after 5 seconds anyway
+    </script>
+</body>
+</html>
